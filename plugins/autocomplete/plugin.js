@@ -158,9 +158,19 @@
 	 * @param {CKEDITOR.plugins.autocomplete.model.item[]} dataCallback.callback.data The suggestion data that should be
 	 * displayed in the autocomplete view for a given query. The data items should implement the
 	 * {@link CKEDITOR.plugins.autocomplete.model.item} interface.
+	 * @param {String} viewTemplate Changes the view template.
+	 * The given template will be used to render matches in the dropdown.
+	 *
+	 * A minimal template should be wrapped with HTML `li` element containing `data-id={id}` attribute.
+	 *
+	 * ```javascript
+	 * autocomplete.setViewTemplate( '<li data-id="{id}" ><img src="{iconSrc}" alt="{name}" /><span>{name}</span></li>' );
+	 * ```
+	 *
+	 * @param {String} outputTemplate See {@link #outputTemplate}
 	 */
-	function Autocomplete( editor, textTestCallback, dataCallback ) {
-		var configKeystrokes = editor.config.autocomplete_commitKeystrokes || CKEDITOR.config.autocomplete_commitKeystrokes;
+	function Autocomplete( editor, textTestCallback, dataCallback, viewTemplate, outputTemplate ) {
+		var configKeystrokes = editor.config.autocomplete_commitKeystroke || CKEDITOR.config.autocomplete_commitKeystroke;
 
 		/**
 		 * The editor instance to which autocomplete is attached to.
@@ -210,6 +220,23 @@
 		 * @private
 		 */
 		this._listeners = [];
+
+		/**
+		 * Output template used to write selected match into an editor.
+		 * You can use any parameter passed into `dataCallback` parameter.
+		 *
+		 * ```javascript
+		 * autocomplete.setOutputTemplate( '<a href="src" alt="name">{name}</a>' );
+		 * ```
+		 *
+		 * @readonly
+		 * @property {CKEDITOR.template}
+		 */
+		this.outputTemplate = outputTemplate !== undefined ? new CKEDITOR.template( outputTemplate ) : null;
+
+		if ( viewTemplate ) {
+			this.view.itemTemplate = new CKEDITOR.template( viewTemplate );
+		}
 
 		this.attach();
 	}
@@ -338,7 +365,8 @@
 		 * @returns {String} The HTML to insert.
 		 */
 		getHtmlToInsert: function( item ) {
-			return item.name;
+			return this.outputTemplate ? this.outputTemplate.output( item )
+				: item.name;
 		},
 
 		/**
