@@ -22,7 +22,10 @@
 			instanceReady: function( evt ) {
 				editor = evt.editor;
 
-				new CKEDITOR.plugins.autocomplete( editor, getTextTestCallback(), dataCallback );
+				new CKEDITOR.plugins.autocomplete( editor, {
+					textTestCallback: getTextTestCallback(),
+					dataCallback: dataCallback
+				} );
 			}
 		}
 	} );

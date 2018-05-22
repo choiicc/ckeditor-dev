@@ -36,7 +36,10 @@
 		extraAllowedContent: 'p(filler)',
 		on: {
 			instanceReady: function( evt ) {
-				new CKEDITOR.plugins.autocomplete( evt.editor, getTextTestCallback(), dataCallback );
+				new CKEDITOR.plugins.autocomplete( evt.editor, {
+					textTestCallback: getTextTestCallback(),
+					dataCallback: dataCallback
+				} );
 			}
 		}
 	};
