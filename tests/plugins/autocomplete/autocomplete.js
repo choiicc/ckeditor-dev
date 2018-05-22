@@ -278,6 +278,35 @@
 			assert.areEqual( '50px', ac.view.element.getStyle( 'left' ) );
 
 			ac.destroy();
+		},
+
+		// (#1997)
+		'test throttle': function() {
+			var editor = this.editors.standard,
+				ac = new CKEDITOR.plugins.autocomplete( editor, {
+					dataCallback: dataCallback,
+					textTestCallback: function() {
+						return { text: CKEDITOR.tools.getUniqueId() };
+					},
+					throttle: 100
+				} ),
+				callbackSpy = sinon.spy( ac.textWatcher, 'callback' );
+
+			this.editorBots.standard.setHtmlWithSelection( '' );
+
+			editor.editable().fire( 'keyup', new CKEDITOR.dom.event( {} ) );
+			editor.editable().fire( 'keyup', new CKEDITOR.dom.event( {} ) );
+			editor.editable().fire( 'keyup', new CKEDITOR.dom.event( {} ) );
+
+			assert.isTrue( callbackSpy.calledOnce );
+
+			setTimeout( function() {
+				resume( function() {
+					assert.isTrue( callbackSpy.calledTwice );
+					ac.destroy();
+				} );
+			}, 100 );
+			wait();
 		}
 	} );
 
