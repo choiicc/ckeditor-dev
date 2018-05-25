@@ -162,7 +162,7 @@
 	 * @param {String} [outputTemplate] Template for match rendering. See {@link #outputTemplate}.
 	 */
 	function Autocomplete( editor, textTestCallback, dataCallback, itemTemplate, outputTemplate ) {
-		var configKeystrokes = editor.config.autocomplete_commitKeystroke || CKEDITOR.config.autocomplete_commitKeystroke;
+		var configKeystrokes = editor.config.autocomplete_commitKeystrokes || CKEDITOR.config.autocomplete_commitKeystrokes;
 
 		/**
 		 * The editor instance to which autocomplete is attached to.
